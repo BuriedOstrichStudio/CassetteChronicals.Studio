@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cassette Chronicles Studio</title>
+  <!-- Base Atom OS theme -->
+  <link rel="stylesheet" href="css/theme.css">
+  <!-- Base Atom OS layout -->
+  <link rel="stylesheet" href="css/layout.min.css">
+  <!-- Base Atom OS combined -->
+  <link rel="stylesheet" href="css/combined.min.css">
+  <!-- Base Atom OS skin -->
+  <link rel="stylesheet" href="css/default.css">
+
+  <script src="javascript/scripts.js" defer></script>
+  <style>
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #333;
+    font-family: "Charcoal";
+    padding: 20px;
+    }
+
+    /* Mac OS 9 style taskbar */
+    .taskbar {
+      background: #dedede;
+      height: 20px;
+      border-bottom: 1px solid #808080;
+      box-shadow: inset 0 1px 0 #f8f8f8;
+      display: flex;
+      align-items: center;
+      padding: 0 4px;
+      position: relative;
+      z-index: 1000;
+      font-family: "Charcoal";
+      justify-content: space-between;
+    }
+
+    .taskbar [role="menubar"] {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      align-items: center;
+    }
+
+    .system-tray {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: 4px;
+    }
+
+    /* Menu dropdown functionality */
+    [role="menubar"] > li > ul {
+      display: none;
+    }
+
+    [role="menubar"] > li.menu-open > ul {
+      display: block;
+    }
+
+    [role="menu"] li:hover {
+      background: #339;
+      color: #fff;
+    }
+
+    [role="menu"] li:active {
+      background: #005;
+      color: #fff;
+    }
+
+    [role="menu"] li[aria-haspopup="true"]:focus-within > ul,
+    [role="menu"] li[aria-haspopup="true"]:hover > ul {
+      display: block !important;
+    }
+
+    .time-display {
+      background: #f0f0f0;
+      border: 1px solid #999;
+      border-top-color: #666;
+      border-left-color: #666;
+      border-right-color: #ddd;
+      border-bottom-color: #ddd;
+      padding: 1px 6px;
+      font-size: 11px;
+      min-width: 60px;
+      text-align: center;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+
+    .system-icon {
+      font-size: 11px;
+      color: #000;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+
+    /* Container for the fake desktop */
+    .desktop-container {
+      width: 1024px;
+      height: 768px;
+      background: url('images/wallpaper.png') repeat;
+      background-size: auto;
+      border: 4px solid #000;
+      box-shadow: 0 0 25px rgba(0,0,0,0.7);
+      resize: both;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      margin: 0 auto;
+    }
+
+    /* Desktop icons */
+    .icon {
+      width: 64px;
+      text-align: center;
+      margin: 10px;
+      cursor: default;
+      position: absolute;
+    }
+    .icon img {
+      width: 48px;
+      height: 48px;
+      display: block;
+      margin: 0 auto;
+    }
+    .icon span {
+      display: block;
+      font-size: 12px;
+      color: black;
+    }
+
+    /* AOL-style window */
+    .window {
+      width: 400px;
+      background: white;
+      border-top: 2px solid black;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      box-shadow: 3px 3px 0px #333;
+    }
+    .titlebar {
+      background: #c0c0c0;
+      padding: 3px 6px;
+      font-weight: bold;
+      border-bottom: 1px solid #999;
+      cursor: move;
+    }
+    .content {
+      padding: 15px;
+    }
+    .content label {
+      display: block;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+    .content input, .content select {
+      width: 90%;
+      padding: 3px;
+      margin-top: 3px;
+    }
+    .buttons {
+      margin-top: 15px;
+      text-align: right;
+    }
+    .buttons button {
+      margin-left: 10px;
+    }
+    /* Tree list visuals + scrollable content tweaks */
+    .tree {
+      list-style: none;
+      margin: 0;
+      padding-left: 6px;
+      font-size: 14px;
+    }
+    .tree li {
+      padding: 4px 6px;
+      user-select: none;
+    }
+    .tree li .node-label {
+      margin-left: 4px;
+    }
+    .tree li > ul {
+      display: none; /* hidden when collapsed */
+      margin-left: 10px;
+      padding-left: 4px;
+      border-left: 1px dashed rgba(0,0,0,0.06);
+    }
+    .tree li[aria-expanded="true"] > ul {
+      display: block;
+    }
+    .tree .toggle {
+      display:inline-block;
+      width: 18px;
+      text-align: center;
+      cursor: pointer;
+    }
+    .tree a.tree-link {
+      color: inherit;
+      text-decoration: none;
+      display: inline-block;
+      width: calc(100% - 6px);
+    }
+    .window .window-body {
+      overflow-y: auto; /* ensure internal scroll */
+      -webkit-overflow-scrolling: touch;
+    }
+    .blog-layout {
+      display: flex;
+      flex-direction: row;
+      height: 100%;
+    }
+
+    .blog-content {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      background: #fff;
+      border-right: 1px solid #ccc;
+    }
+
+    .blog-tree {
+      width: 220px;
+      overflow-y: auto;
+      background: #f8f8f8;
+      padding: 6px;
+    }
+
+    .window {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .window .window-body {
+      box-sizing: border-box;
+      min-height: 0;
+      overflow: auto;
+    }
+
+    </style>
+
+</head>
+<body>
+  <!-- Mac OS 9 style taskbar -->
+  <div class="desktop-container">
+    <div class="taskbar">
+  <ul role="menubar">
+    <li tabindex="0">🍎
+      <ul role="menu">
+        <li role="menuitem" id="openAboutWindow">About This Mac</li>
+        <li role="separator"></li>
+        <li role="menuitem">System Preferences...</li>
+        <li role="menuitem">Recent Items</li>
+        <li role="separator"></li>
+        <li role="menuitem">Force Quit...</li>
+        <li role="separator"></li>
+        <li role="menuitem">Sleep</li>
+        <li role="menuitem">Restart...</li>
+        <li role="menuitem">Shut Down...</li>
+      </ul>
+    </li>
+    <li tabindex="0">Links
+  <ul role="menu">
+    <li role="menuitem" aria-haspopup="true" tabindex="0">Member Site
+      <ul role="menu">
+        <li role="menuitem">
+          <a href="https://yourmembersite.com" target="_blank" style="text-decoration:none; color:inherit; display:block;">
+            Perks Of Subscribing
+          </a>
+        </li>
+        <li role="menuitem">
+          <a href="https://yourmembersite.com/profile" target="_blank" style="text-decoration:none; color:inherit; display:block;">
+            Cassette Chronical Shop
+          </a>
+        </li>
+        <li role="menuitem">
+          <a href="https://yourmembersite.com/profile" target="_blank" style="text-decoration:none; color:inherit; display:block;">
+            Members Only
+          </a>
+        </li>
+      </ul>
+    </li>
+      <li role="menuitem" aria-haspopup="true" tabindex="0">Games and Code
+        <ul role="menu">
+          <li role="menuitem">
+            <a href="https://twitch.tv/yourusername" target="_blank" style="text-decoration:none; color:inherit; display:block;">
+              Steam
+            </a>
+          </li>
+          <li role="menuitem">
+            <a href="https://youtube.com/@yourusername" target="_blank" style="text-decoration:none; color:inherit; display:block;">
+              Itch
+            </a>
+          </li>
+          <li role="menuitem">
+            <a href="https://twitch.tv/yourusername" target="_blank" style="text-decoration:none; color:inherit; display:block;">
+              Game Jolt
+            </a>
+          </li>
+          <li role="menuitem">
+            <a href="https://twitch.tv/yourusername" target="_blank" style="text-decoration:none; color:inherit; display:block;">
+              Github
+            </a>
+          </li>
+          <li role="menuitem">
+            <a href="https://twitch.tv/yourusername" target="_blank" style="text-decoration:none; color:inherit; display:block;">
+              Codeberg
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li role="menuitem" aria-haspopup="true" tabindex="0">Social Media
+        <ul role="menu">
+          <li role="menuitem">
+            <a href="https://twitter.com/yourusername" target="_blank" style="text-decoration:none; color:inherit; display:block;">
+              Twitch
+            </a>
+          </li>
+          <li role="menuitem">
+            <a href="https://instagram.com/yourusername" target="_blank" style="text-decoration:none; color:inherit; display:block;">
+              Youtube
+            </a>
+          </li>
+          <li role="menuitem">
+            <a href="https://twitch.tv/yourusername" target="_blank" style="text-decoration:none; color:inherit; display:block;">
+              Instagram
+            </a>
+          </li>
+          <li role="menuitem">
+            <a href="https://twitch.tv/yourusername" target="_blank" style="text-decoration:none; color:inherit; display:block;">
+              Twitter
+            </a>
+          </li>
+          <li role="menuitem">
+            <a href="https://twitch.tv/yourusername" target="_blank" style="text-decoration:none; color:inherit; display:block;">
+              Bluesky
+            </a>
+          </li>
+          <li role="menuitem">
+            <a href="https://twitch.tv/yourusername" target="_blank" style="text-decoration:none; color:inherit; display:block;">
+              Tik Tok
+            </a>
+          </li>
+          <li role="menuitem">
+            <a href="https://twitch.tv/yourusername" target="_blank" style="text-decoration:none; color:inherit; display:block;">
+              Tumbler
+            </a>
+          </li>
+        </ul>
+      </li>
+    <li role="separator"></li>
+    <li role="menuitem">Close Window</li>
+  </ul>
+</li>
+  <li tabindex="0">Blogs
+    <ul role="menu">
+      <li role="menuitem" id="openBlog1">Random Thoughts</li>
+      <li role="menuitem" id="openBlog2">Cassette Chronicles News</li>
+      <li role="menuitem" id="openBlog3">Game News</li>
+    </ul>
+</li>
+    <li tabindex="0">View
+      <ul role="menu">
+        <li role="menuitem">as Icons</li>
+        <li role="menuitem">as List</li>
+        <li role="separator"></li>
+        <li role="menuitem">Clean Up</li>
+      </ul>
+    </li>
+    <li tabindex="0">Special
+      <ul role="menu">
+        <li role="menuitem">Empty Trash...</li>
+        <li role="menuitem">Eject Disk</li>
+      </ul>
+    </li>
+    <li tabindex="0">Help
+  <ul role="menu">
+    <li role="menuitem" id="openHelpWindow">About This Fake OS</li>
+  </ul>
+</li>
+  </ul>
+
+  <!-- About This Mac Window -->
+<div class="window active" id="aboutWindow" style="width: 300px; height: 200px; position: absolute; top: 250px; left: 250px; display: none; z-index: 1000;">
+  <div class="title-bar">
+    <div class="title-bar-buttons">
+      <button id="closeAbout" data-close=""></button>
+    </div>
+    <div class="title-bar-text">About This Atom</div>
+  </div>
+
+  <div class="window-body" style="background-color: #fffbf0; padding: 20px; overflow-y: auto;">
+    <p><strong>Atom OS</strong></p>
+    <p>Version 0.1 Alpha</p>
+    <p>© 2025 Cassette Chronicles Studio</p>
+    <p><a href="url">Fourthwall</a></p>
+  </div>
+</div>
+
+    <!-- Help Window -->
+    <div class="window active" id="helpWindow" style="width: 200px; height: 200px; position: absolute; top: 200px; left: 120px; z-index: 1000; display: none;">
+      <div class="title-bar">
+        <div class="title-bar-buttons">
+          <button id="closeHelp" data-close=""></button>
+        </div>
+        <div class="title-bar-text">Help</div>
+      </div>
+
+    <div class="window-body" style="background-color: #fffbf0; padding: 20px; overflow-y: auto;">
+      <p>Welcome to your fake Mac OS 9 desktop! 🎉</p>
+      <p>You can add windows, icons, and even AOL-like programs here.</p>
+    </div>
+  </div>
+
+  <!-- What's New Window -->
+  <div class="window active" id="whatsnewWindow"
+     style="width: 300px; height: 300px; position: absolute; top: 200px; left: 400px; z-index: 1000; display: block;">
+  <div class="title-bar">
+    <div class="title-bar-buttons">
+      <button id="closeWhatsNew" data-close=""></button>
+    </div>
+    <div class="title-bar-text">What's New</div>
+  </div>
+
+  <div class="window-body" id="whatsnewContent"
+       style="background-color: #fffbf0; padding: 20px; overflow-y: auto;">
+    <!-- Content will load from whatsnew.html -->
+    <p>Loading updates...</p>
+  </div>
+</div>
+
+  <div class="system-tray">
+    <div class="time-display" id="timeDisplay">5:34 PM</div>
+    <div class="system-icon">Finder</div>
+  </div>
+
+    <!-- Desktop icons go here -->
+    <div class="icon" style="top:100px; right:20px;" ondblclick="openAOL()">
+      <img src="Images/AOL Descktop Icon.png" alt="AOL">
+      <span>AOL</span>
+    </div>
+
+    <!-- AOL-like login window -->
+    <div class="window active" id="aolWindow" style="width: 400px; height: 350px; position: absolute; top: 200px; left: 300px; z-index: 1000; display: none;">
+      <div class="title-bar">
+        <div class="title-bar-buttons">
+          <button onclick="closeAOL()" data-close=""></button>
+        </div>
+          <div class="title-bar-text">Welcome</div>
+        </div>
+
+        <div class="window-body" style="background-color: #c0c0c0; padding: 0; display: flex; height: 328px;">
+            <!-- Left blue panel -->
+            <div style="background: #006699; width: 100px; height: 100%; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <div style="color: white; font-size: 24px; font-weight: bold; text-align: center; margin-bottom: 10px;">
+                    <div style="font-size: 16px;">America</div>
+                    <div style="font-style: italic; font-size: 28px;">Online</div>
+                </div>
+                <div style="position: absolute; bottom: 10px; left: 15px; color: white; font-size: 15px;">version 4.0</div>
+            </div>
+
+            <!-- Right form panel -->
+            <div style="flex: 1; padding: 90px 20px 20px 20px; background: #fffbf0;">
+                <label for="screenname" style="font-size: 12px; font-weight: bold;">Select Screen Name</label>
+                <select id="screenname" style="background-color: white; width: 100%; margin-bottom: 15px; padding: 2px; text-align: left;">
+                    <option>Guest</option>
+                </select>
+
+                <label for="password" style="font-size: 12px; font-weight: bold; color: #666;">Enter Password</label>
+                <input type="password" id="password" style="width: 100%; margin-bottom: 15px; padding: 2px;">
+
+                <label for="location" style="font-size: 12px; font-weight: bold;">Select Location</label>
+                <select id="location" style="background-color: white; width: 100%; margin-bottom: 20px; padding: 2px; text-align: left;">
+                    <option>TCP (for LAN or ISP)</option>
+                    <option>Dial-up</option>
+                </select>
+
+                <div style="display: flex; gap: 25px; align-items: center; justify-content: flex-end;">
+                    <button onclick="showHint()" style="background-color: white; color: black; border: 2px solid #333; padding: 5px 10px; font-size: 16px; cursor: pointer;">?</button>
+                    <button style="background-color: white; color: black; border: 2px solid #333; padding: 5px 10px; cursor: pointer;">Setup</button>
+                    <button onclick="signOn()" style="background-color: white; color: black; border: 2px solid #333; padding: 5px 10px; cursor: pointer;">SignOn</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="window active" id="hintWindow" style="width: 300px; height: 165px; position: absolute; top: 30%; left: 60%; display: none; z-index: 1000;">
+      <div class="title-bar">
+        <div class="title-bar-buttons">
+          <button onclick="closeHint()" data-close=""></button>
+        </div>
+        <div class="title-bar-text">Password Hint</div>
+      </div>
+      <div class="window-body" style="background-color: #c0c0c0; padding: 0; display: flex;">
+        <div style="flex: 1; padding: 20px; background: #fffbf0; text-align: center;">
+          <p style="margin: 0 0 15px 0; font-size: 14px;">Your password hint:</p>
+          <p style="margin: 0; font-weight: bold; font-size: 16px; color: #333;">
+            "Look byond what you see"
+          </p>
+          <button onclick="closeHint()" style="margin-top: 20px; background-color: white; color: black; border: 2px solid #333; padding: 5px 15px; cursor: pointer;">
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Blog One -->
+    <div class="window" id="blogWindow1" style="width:600px; height:400px; position:absolute; top:160px; left:120px; display:none;">
+      <div class="title-bar" style="height:18px; line-height:18px; padding: 0 6px; font-size: 12px;">
+        <div class="title-bar-buttons">
+          <button data-close></button>
+        </div>
+        <div class="title-bar-text">Random Thoughts</div>
+      </div>
+      <div class="window-body" style="display: flex; flex-direction: row; height: calc(100% - 18px); overflow: hidden;">
+        <div class="blog-content" id="blogContent1" style="flex: 1; padding: 10px; overflow-y: auto; background: #fff; border-right: 1px solid #ccc;">
+          <h2>Random Thoughts</h2>
+          <p>This is where I share thoughts and ideas I have each day that I feel are not amazing enough to have their own blog section.</p>
+        </div>
+        <div class="blog-tree" id="blogTree1" style="width:220px; overflow-y: auto; background: #f8f8f8; padding: 6px;">
+          <p>Loading entries...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Blog Two -->
+    <div class="window" id="blogWindow2" style="width:600px; height:400px; position:absolute; top:200px; left:180px; display:none;">
+      <div class="title-bar" style="height:18px; line-height:18px; padding: 0 6px; font-size: 12px;">
+        <div class="title-bar-buttons">
+          <button data-close></button>
+        </div>
+        <div class="title-bar-text">Cassette Chronicles News</div>
+      </div>
+      <div class="window-body" style="display: flex; flex-direction: row; height: calc(100% - 18px); overflow: hidden;">
+        <div class="blog-content" id="blogContent2" style="flex: 1; padding: 10px; overflow-y: auto; background: #fff; border-right: 1px solid #ccc;">
+          <p>Select an entry from the list →</p>
+        </div>
+        <div class="blog-tree" id="blogTree2" style="width:220px; overflow-y: auto; background: #f8f8f8; padding: 6px;">
+          <p>Loading entries...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Blog Three -->
+    <div class="window" id="blogWindow3" style="width:600px; height:400px; position:absolute; top:240px; left:220px; display:none;">
+      <div class="title-bar" style="height:18px; line-height:18px; padding: 0 6px; font-size: 12px;">
+        <div class="title-bar-buttons">
+          <button data-close></button>
+        </div>
+        <div class="title-bar-text">Game News</div>
+      </div>
+      <div class="window-body" style="display: flex; flex-direction: row; height: calc(100% - 18px); overflow: hidden;">
+        <div class="blog-content" id="blogContent3" style="flex: 1; padding: 10px; overflow-y: auto; background: #fff; border-right: 1px solid #ccc;">
+          <p>Select an entry from the list →</p>
+        </div>
+        <div class="blog-tree" id="blogTree3" style="width:220px; overflow-y: auto; background: #f8f8f8; padding: 6px;">
+          <p>Loading entries...</p>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</body>
+</html>
