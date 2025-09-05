@@ -17,4 +17,4 @@ jobs:
           nekoweb-cookie: ${{ secrets.NEKOWEB_COOKIE }}
           nekoweb-domain: 'cassettechronicalsstudio.nekoweb.org'
           nekoweb-username: 'cassettechronicalsstudio'
-          directory: 'CassetteChronicals.Studio'
+          directory: '.'
