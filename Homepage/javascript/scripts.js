@@ -646,7 +646,7 @@ window.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('load', () => openWindowById('whatsnewWindow'));
 
   // Load What's New content from external file
-  fetch('Homepage/extras/whatsnew.html')
+  fetch('/extras/whatsnew.html')
     .then(res => res.text())
     .then(html => {
       document.getElementById('whatsnewContent').innerHTML = html;
