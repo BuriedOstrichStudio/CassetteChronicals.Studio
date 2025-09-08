@@ -253,6 +253,18 @@
       overflow: auto;
     }
 
+    /* Make dropdown menus always appear above windows */
+    [role="menubar"] > li > ul {
+      position: absolute;       /* Take them out of normal flow */
+      top: 100%;                /* Drop them below the parent item */
+      left: 0;
+      background: #f0f0f0;
+      border: 1px solid #999;
+      z-index: 9999;            /* Ensure it's above all windows */
+      min-width: 160px;
+      box-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
     </style>
 
 </head>
