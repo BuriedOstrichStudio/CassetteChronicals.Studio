@@ -656,4 +656,40 @@ window.addEventListener('DOMContentLoaded', () => {
       document.getElementById('whatsnewContent').innerHTML =
         '<p style="color:red;">Could not load updates.</p>';
     });
+    // Function to reset blog to its main page
+function resetBlog(blogId) {
+  const blogContent = document.getElementById(`blogContent${blogId}`);
+
+  if (blogId === 1) {
+    blogContent.innerHTML = `
+      <h2>Random Thoughts</h2>
+      <p>This is where I share thoughts and ideas I have each day that I feel are not amazing enough to have their own blog section.</p>
+    `;
+  } else if (blogId === 2) {
+    blogContent.innerHTML = `
+      <h2>Cassette Chronicles Studio News</h2>
+      <p>Here you wil find all news on up coming project and future anouncments about that is going on at Cassette Chronicles Studio.</p>
+    `;
+  } else if (blogId === 3) {
+    blogContent.innerHTML = `
+      <p>Select an entry from the list →</p>
+    `;
+  }
+}
+
+// Attach reset + open behavior to menu clicks
+document.getElementById("openBlog1").addEventListener("click", () => {
+  resetBlog(1);
+  document.getElementById("blogWindow1").style.display = "block";
+});
+
+document.getElementById("openBlog2").addEventListener("click", () => {
+  resetBlog(2);
+  document.getElementById("blogWindow2").style.display = "block";
+});
+
+document.getElementById("openBlog3").addEventListener("click", () => {
+  resetBlog(3);
+  document.getElementById("blogWindow3").style.display = "block";
+});
 });
