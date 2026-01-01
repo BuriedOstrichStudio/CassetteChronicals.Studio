@@ -15,6 +15,6 @@ jobs:
         with:
           nekoweb-api-key: ${{ secrets.NEKOWEB_API_KEY }}
           nekoweb-cookie: ${{ secrets.NEKOWEB_COOKIE }}
-          nekoweb-domain: 'cassettechronicalsstudio.nekoweb.org'
-          nekoweb-username: 'cassettechronicalsstudio'
+          nekoweb-domain: 'cassettechroniclesstudio.nekoweb.org'
+          nekoweb-username: 'cassettechroniclesstudio'
           directory: 'Homepage'
